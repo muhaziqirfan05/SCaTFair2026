@@ -5,205 +5,566 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI & Computational Thinking Playbook</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Exo+2:wght@400;500;600;700&display=swap');
+
         :root {
-            --primary: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --panel: #ffffff;
-            --text-main: #1e293b;
+            --bg: #070b14;
+            --bg-soft: #0f1626;
+            --panel: #101a2f;
+            --panel-2: #13223f;
+            --text: #e5ecff;
+            --muted: #9fb0d9;
+            --primary: #2dd4ff;
+            --primary-strong: #0ea5e9;
+            --success: #22c55e;
+            --danger: #fb7185;
+            --warning: #f59e0b;
+            --border: rgba(113, 152, 255, 0.3);
+            --glow: 0 0 0 1px rgba(46, 212, 255, 0.2), 0 0 20px rgba(45, 212, 255, 0.18);
+            --radius: 14px;
+            --sidebar-width: 290px;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-main);
+            min-height: 100vh;
+            font-family: 'Exo 2', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 500px at 10% -10%, rgba(45, 212, 255, 0.16), transparent 55%),
+                radial-gradient(900px 400px at 110% 0%, rgba(34, 197, 94, 0.09), transparent 58%),
+                linear-gradient(180deg, #060912 0%, #090f1d 45%, #0a1324 100%);
+            padding: 28px 28px 32px calc(var(--sidebar-width) + 36px);
         }
 
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-size: 28px; }
-        .header p { color: #64748b; margin: 8px 0 0 0; font-size: 16px; }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: radial-gradient(circle at center, black, transparent 85%);
+        }
 
-        /* Navigation Tabs */
+        .header {
+            width: min(1180px, 100%);
+            margin: 0 auto 20px;
+            padding: 24px 28px;
+            border-radius: calc(var(--radius) + 4px);
+            border: 1px solid var(--border);
+            background: linear-gradient(140deg, rgba(15, 24, 45, 0.92), rgba(18, 34, 63, 0.86));
+            box-shadow: var(--glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            top: -220px;
+            right: -90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 212, 255, 0.35), transparent 65%);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #f4f8ff;
+            text-shadow: 0 0 14px rgba(45, 212, 255, 0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            max-width: 70ch;
+            font-size: 1.03rem;
+        }
+
         .tab-navigation {
+            position: fixed;
+            top: 28px;
+            left: 22px;
+            width: var(--sidebar-width);
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            margin-bottom: 25px;
-            background: #e2e8f0;
-            padding: 6px;
-            border-radius: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
+            padding: 14px;
+            border-radius: 18px;
+            background: linear-gradient(170deg, rgba(15, 24, 45, 0.95), rgba(10, 17, 32, 0.88));
+            border: 1px solid rgba(83, 126, 255, 0.35);
+            box-shadow: 0 12px 38px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(45, 212, 255, 0.17);
+            backdrop-filter: blur(8px);
+            z-index: 12;
         }
 
         .tab-btn {
-            padding: 10px 20px;
-            border: none;
-            background: transparent;
-            font-size: 14px;
+            width: 100%;
+            border: 1px solid rgba(133, 152, 212, 0.28);
+            border-radius: 12px;
+            padding: 12px 13px;
+            text-align: left;
+            color: var(--text);
+            background: linear-gradient(140deg, rgba(22, 33, 61, 0.9), rgba(13, 22, 42, 0.85));
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.94rem;
             font-weight: 600;
-            color: #475569;
+            letter-spacing: 0.01em;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        }
+
+        .tab-btn:hover {
+            transform: translateX(4px);
+            border-color: rgba(45, 212, 255, 0.5);
+            box-shadow: 0 0 0 1px rgba(45, 212, 255, 0.23), 0 0 16px rgba(45, 212, 255, 0.2);
         }
 
         .tab-btn.active {
-            background: var(--panel);
-            color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-color: rgba(45, 212, 255, 0.85);
+            background: linear-gradient(145deg, rgba(21, 43, 86, 0.97), rgba(11, 28, 60, 0.95));
+            box-shadow: 0 0 0 1px rgba(45, 212, 255, 0.3), inset 0 0 14px rgba(45, 212, 255, 0.2);
+        }
+
+        hr {
+            width: min(1180px, 100%);
+            margin: 4px auto 18px;
+            border: 0;
+            border-top: 1px solid rgba(112, 137, 205, 0.34);
         }
 
         .content-section {
             display: none;
-            max-width: 1100px;
-            width: 100%;
+            width: min(1180px, 100%);
+            margin: 0 auto;
         }
 
         .content-section.active {
             display: block;
+            animation: fadeShift 380ms ease;
+        }
+
+        @keyframes fadeShift {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .panel {
-            background: var(--panel);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            border-radius: var(--radius);
+            background: linear-gradient(165deg, rgba(16, 26, 47, 0.92), rgba(12, 19, 36, 0.88));
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(214, 226, 255, 0.05);
+            padding: 22px;
+            margin-bottom: 18px;
         }
 
-        h2 { color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;}
-        h3 { color: #1e293b; }
-
-        /* Syllabus Badges */
-        .syllabus-badge {
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 8px;
-            margin-right: 4px;
+        h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.04em;
+            margin-top: 0;
         }
 
-        /* Notes Layout */
+        p {
+            color: var(--muted);
+            line-height: 1.62;
+        }
+
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
         }
-        .note-card {
-            background: #f8fafc;
-            border-top: 4px solid var(--primary);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .comparison-box {
-            display: flex;
-            gap: 15px;
-            margin-top: 12px;
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            font-size: 13px;
-        }
-        .comp-half { flex: 1; }
-        .comp-title { font-weight: bold; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;}
 
-        /* Pipeline & Game Common Grid Layouts */
-        .sim-layout { display: flex; gap: 30px; }
-        .sim-col { flex: 1; }
-        .workspace { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .fc-shape { padding: 12px 20px; color: white; font-weight: bold; text-align: center; min-width: 240px; border-radius: 4px; }
-        .fc-terminator { background: #7c3aed; border-radius: 20px; }
-        .fc-process { background: #475569; }
-        
-        .slot {
-            border: 2px dashed #cbd5e1; background: #f1f5f9; color: #64748b; border-radius: 6px;
-            min-height: 50px; min-width: 280px; display: flex; align-items: center; justify-content: center;
-            font-size: 13px; cursor: pointer; text-align: center; padding: 5px 15px; transition: all 0.2s ease;
+        .note-card,
+        .workspace,
+        .toolbox,
+        .room-state,
+        .room-success,
+        .block-option,
+        .slot,
+        .game-panel-left,
+        .game-panel-right,
+        .live-output-box,
+        .binary-stream-box,
+        .image-card,
+        .level-indicator,
+        .pixel,
+        .visualizer {
+            border-radius: 12px;
         }
-        .slot:hover { border-color: var(--primary); background: #f8fafc; }
-        .slot.filled { background: #e2e8f0; border-style: solid; border-color: #94a3b8; color: var(--text-main); font-weight: 600; }
-        .arrow { font-size: 20px; color: #94a3b8; font-weight: bold; margin: -5px 0; }
+
+        .note-card,
+        .workspace,
+        .toolbox,
+        .game-panel-left,
+        .game-panel-right,
+        .level-indicator,
+        .visualizer,
+        .block-option,
+        .slot,
+        .live-output-box,
+        .binary-stream-box {
+            border: 1px solid rgba(112, 137, 205, 0.3);
+            background: linear-gradient(150deg, rgba(19, 33, 60, 0.65), rgba(11, 20, 37, 0.65));
+        }
+
+        .note-card {
+            padding: 16px;
+            border-top: 3px solid var(--primary);
+            cursor: pointer;
+            transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        .note-card:hover,
+        .note-card.is-expanded {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.2);
+        }
+
+        .note-details {
+            display: none;
+            margin-top: 10px;
+            color: #d5def8;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(148, 163, 184, 0.35);
+        }
+
+        .note-card.is-expanded .note-details {
+            display: block;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .comp-half {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .comp-title {
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .syllabus-badge {
+            display: inline-block;
+            margin: 0 8px 10px 0;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(45, 212, 255, 0.14);
+            border: 1px solid rgba(45, 212, 255, 0.45);
+            color: #b7ecff;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .sim-layout,
+        .game-container,
+        .detective-cards,
+        .detective-container {
+            display: grid;
+            gap: 14px;
+        }
+
+        .sim-layout,
+        .game-container {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .toolbox h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .block-option,
+        .slot,
+        .visualizer,
+        .live-output-box,
+        .binary-stream-box,
+        .level-indicator {
+            padding: 12px;
+            color: #d8e3ff;
+        }
 
         .block-option {
-            background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 12px;
-            border-radius: 6px; cursor: pointer; font-size: 13px; line-height: 1.4; transition: all 0.2s;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color 180ms ease, transform 180ms ease;
         }
-        .block-option:hover { background: #edf2f7; border-color: #94a3b8; }
 
-        .visualizer {
-            margin-top: 20px; text-align: center; padding: 20px; border-radius: 8px;
-            background: #e2e8f0; font-weight: bold; font-size: 14px; line-height: 1.6;
+        .block-option:hover {
+            border-color: rgba(45, 212, 255, 0.62);
+            transform: translateY(-2px);
         }
-        .room-state { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
-        .room-success { background: #d1fae5; color: var(--success); border: 1px solid #6ee7b7; }
+
+        .slot {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .slot.filled {
+            border-color: rgba(45, 212, 255, 0.7);
+            box-shadow: inset 0 0 12px rgba(45, 212, 255, 0.14);
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #7dd3fc;
+            margin: 6px 0;
+        }
+
+        .fc-shape {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(113, 152, 255, 0.4);
+            background: rgba(13, 27, 52, 0.88);
+            border-radius: 11px;
+            color: #e4ebff;
+            font-weight: 600;
+        }
+
+        .fc-terminator {
+            border-radius: 999px;
+        }
 
         .btn-run {
-            width: 100%; padding: 14px; background: var(--primary); color: white; border: none;
-            border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px;
+            width: 100%;
+            border: 1px solid rgba(45, 212, 255, 0.7);
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: linear-gradient(140deg, #0f8fb5, #0b5e8f);
+            color: #ecfeff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: transform 180ms ease, filter 180ms ease;
         }
 
-        /* --- Vision Game Layout --- */
-        .game-container { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
-        .game-panel-left { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; }
-        .game-panel-right { flex: 1; display: flex; flex-direction: column; align-items: center; }
-        .binary-stream-box {
-            background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 16px;
-            padding: 15px; border-radius: 6px; letter-spacing: 2px; text-align: center; margin: 15px 0;
+        .btn-run:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
         }
-        .pixel-grid { display: grid; grid-template-columns: repeat(5, 50px); gap: 4px; background: #cbd5e1; padding: 6px; border-radius: 8px; }
+
+        .room-state {
+            color: #d8def2;
+        }
+
+        .room-success {
+            color: #b9fbcf;
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            background: linear-gradient(145deg, rgba(9, 38, 30, 0.78), rgba(9, 28, 24, 0.85));
+            padding: 12px;
+        }
+
+        .pixel-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
         .pixel {
-            width: 50px; height: 50px; background: #ffffff; border: 1px solid #94a3b8; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: #94a3b8;
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            color: #9aa7cb;
+            background: rgba(13, 24, 45, 0.8);
+            cursor: pointer;
+            user-select: none;
+            font-family: 'Orbitron', sans-serif;
+            transition: transform 140ms ease, background 140ms ease;
         }
-        .pixel.active { background: #1e293b; color: #ffffff; }
 
-        /* --- DETECTIVE CHALLENGE STYLES (UPDATED FOR 500PX WIDTH) --- */
-        .detective-container { text-align: center; margin-top: 10px; }
-        .level-indicator { font-weight: bold; color: var(--primary); font-size: 18px; margin-bottom: 10px; }
-        .detective-cards { display: flex; justify-content: center; gap: 25px; margin: 20px 0; flex-wrap: wrap; }
-        
+        .pixel.active {
+            color: #04111d;
+            background: #67e8f9;
+            box-shadow: 0 0 15px rgba(103, 232, 249, 0.55);
+        }
+
+        .detective-cards {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
         .image-card {
-            background: #f1f5f9; 
-            border: 3px solid #cbd5e1; 
-            border-radius: 10px; 
-            overflow: hidden;
-            width: 500px; /* Locked down layout width container */
-            cursor: pointer; 
-            transition: all 0.2s ease; 
             position: relative;
-        }
-        .image-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        
-        .image-card img { 
-            width: 100%; 
-            height: 360px; /* Scaled aspect ratio safely to match 500px rendering width */
-            object-fit: cover; 
-            display: block; 
-        }
-        
-        .card-label { padding: 14px; font-weight: bold; background: #ffffff; border-top: 1px solid #e2e8f0; font-size: 15px; }
-        .clue-overlay {
-            position: absolute; top: 15px; left: 15px; background: rgba(239, 68, 68, 0.95);
-            color: white; padding: 10px 14px; border-radius: 6px; font-size: 13px; text-align: left;
-            max-width: 85%; display: none; line-height: 1.4; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 10;
+            overflow: hidden;
+            border: 1px solid rgba(113, 152, 255, 0.45);
+            background: rgba(10, 17, 31, 0.86);
+            cursor: pointer;
         }
 
-        @media (max-width: 768px) {
-            .sim-layout, .game-container, .detective-cards { flex-direction: column; align-items: center; }
-            .image-card { width: 100%; max-width: 500px; }
+        .image-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-label {
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #dbebff;
+            background: rgba(5, 11, 23, 0.78);
+        }
+
+        .clue-overlay {
+            display: none;
+            position: absolute;
+            inset: auto 10px 46px 10px;
+            background: rgba(7, 12, 20, 0.86);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            color: #ecf4ff;
+            padding: 9px;
+            border-radius: 10px;
+            font-size: 0.86rem;
+        }
+
+        #btn-next-level {
+            margin-top: 8px;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 16px;
+            }
+
+            .tab-navigation {
+                position: sticky;
+                top: 10px;
+                left: auto;
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
+                margin: 0 auto 14px;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .tab-btn {
+                flex: 1 0 220px;
+                text-align: center;
+            }
+
+            .tab-btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .header,
+            hr,
+            .content-section {
+                width: 100%;
+            }
+
+            .notes-grid,
+            .sim-layout,
+            .game-container,
+            .detective-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-box {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-navigation {
+                box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(45, 212, 255, 0.12);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 1.35rem;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .panel {
+                padding: 14px;
+            }
+
+            .tab-navigation {
+                top: 8px;
+                padding: 8px;
+            }
+
+            .tab-btn {
+                flex: 1 0 180px;
+                padding: 10px 12px;
+                font-size: 0.88rem;
+            }
+
+            .notes-grid {
+                gap: 10px;
+            }
+
+            .workspace,
+            .toolbox,
+            .game-panel-left,
+            .game-panel-right,
+            .level-indicator,
+            .visualizer,
+            .block-option,
+            .slot,
+            .live-output-box,
+            .binary-stream-box {
+                padding: 10px;
+            }
+
+            .pixel-grid {
+                grid-template-columns: repeat(5, 42px);
+                gap: 6px;
+            }
+
+            .pixel {
+                width: 42px;
+                height: 42px;
+                font-size: 0.84rem;
+            }
+
+            .image-card {
+                max-width: 100%;
+            }
+
+            .image-card img {
+                height: 220px;
+            }
+
+            .clue-overlay {
+                left: 8px;
+                right: 8px;
+                bottom: 42px;
+            }
         }
     </style>
 </head>
@@ -228,29 +589,38 @@
         <h2>How AI Uses Your Lower Secondary Syllabus</h2>
         <p>Artificial Intelligence runs entirely on the core principles of <strong>Pemikiran Komputasional</strong> that you study in school.</p>
         <div class="notes-grid">
-            <div class="note-card">
+            <div class="note-card" tabindex="0" role="button" aria-expanded="false" onclick="toggleNoteCard(this)" onkeydown="handleNoteCardKey(event, this)">
                 <div class="syllabus-badge">ASK: Pengecaman Corak</div>
                 <h3>1. Pattern Recognition</h3>
                 <p>Machine Learning models analyze huge datasets to find hidden textures and trends that humans might miss.</p>
-                <div class="comparison-box">
-                    <div class="comp-half"><div class="comp-title" style="color:var(--danger)">Old Rules</div>Checks flat fixed values strictly.</div>
-                    <div class="comp-half" style="border-left:1px solid #e2e8f0; padding-left:10px;"><div class="comp-title" style="color:var(--success)">AI Solution</div>Maps fluid multi-variable trends together.</div>
+                
+                <div class="note-details">
+                    <strong>Why it matters:</strong> this is how AI spots repeated shapes, sound patterns, or behaviour trends without being told every rule in advance.
                 </div>
             </div>
-            <div class="note-card" style="border-top-color: #7c3aed;">
+            <div class="note-card" style="border-top-color: #7c3aed;" tabindex="0" role="button" aria-expanded="false" onclick="toggleNoteCard(this)" onkeydown="handleNoteCardKey(event, this)">
                 <div class="syllabus-badge">ASK: Leraian</div>
                 <h3>2. Decomposition</h3>
                 <p>To analyze complex data, an AI breaks real-world environments down into independent processing streams (features).</p>
+                <div class="note-details">
+                    <strong>Why it matters:</strong> splitting a problem into smaller parts makes the system easier to train, debug, and improve.
+                </div>
             </div>
-            <div class="note-card" style="border-top-color: #f59e0b;">
+            <div class="note-card" style="border-top-color: #f59e0b;" tabindex="0" role="button" aria-expanded="false" onclick="toggleNoteCard(this)" onkeydown="handleNoteCardKey(event, this)">
                 <div class="syllabus-badge">ASK: Peniskalaan</div>
                 <h3>3. Abstraction</h3>
                 <p>AI models practice Abstraction by filtering out background noise, random spikes, or visual glitch patterns to focus solely on crucial data properties.</p>
+                <div class="note-details">
+                    <strong>Why it matters:</strong> abstraction helps the model ignore distractions and keep the signals that actually influence the result.
+                </div>
             </div>
-            <div class="note-card" style="border-top-color: var(--success);">
+            <div class="note-card" style="border-top-color: var(--success);" tabindex="0" role="button" aria-expanded="false" onclick="toggleNoteCard(this)" onkeydown="handleNoteCardKey(event, this)">
                 <div class="syllabus-badge">RBT: Carta Alir</div>
                 <h3>4. Dynamic Control Structures</h3>
                 <p>Instead of hardcoding a fixed, permanent "YES/NO" flowchart choice, an AI pipeline paths itself dynamically using data pattern weights.</p>
+                <div class="note-details">
+                    <strong>Why it matters:</strong> AI can adjust the next action based on what it detects, instead of following one fixed path every time.
+                </div>
             </div>
         </div>
     </div>
@@ -353,6 +723,26 @@
         document.getElementById(`section-${tabId}`).classList.add('active');
     }
 
+    function toggleNoteCard(card) {
+        const shouldExpand = !card.classList.contains('is-expanded');
+        document.querySelectorAll('.note-card.is-expanded').forEach(openCard => {
+            openCard.classList.remove('is-expanded');
+            openCard.setAttribute('aria-expanded', 'false');
+        });
+
+        if (shouldExpand) {
+            card.classList.add('is-expanded');
+            card.setAttribute('aria-expanded', 'true');
+        }
+    }
+
+    function handleNoteCardKey(event, card) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleNoteCard(card);
+        }
+    }
+
     // STATE TRACERS FOR TAB 2 PIPELINE
     let selections = { 'ai-core': { text: null, isCorrect: false }, hardware: { text: null, isCorrect: false } };
     function selectBlock(type, text, isCorrect) {
@@ -418,7 +808,7 @@
             title: "Level 1: The Canteen Kitchen Test (Easy)",
             instruction: "One picture is a real photo of raw baking setup. The other is an AI generated asset with physical errors. Spot the fake!",
             leftImg: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=600&q=80", 
-            rightImg: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=600&q=80", 
+            rightImg: "images/image-ai2.png", 
             fakeSide: "right",
             leftClue: "✅ <strong>Real:</strong> Notice the natural, messy, imperfect textures of flour dust and chaotic lighting reflections.",
             rightClue: "⚠️ <strong>AI Generated!</strong> Zoom into the facial pores and teeth. They are perfectly hyper-symmetrical, airbrushed, and look plastic like a doll."
