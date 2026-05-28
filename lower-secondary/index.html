@@ -22,7 +22,8 @@
             --border: rgba(113, 152, 255, 0.3);
             --glow: 0 0 0 1px rgba(46, 212, 255, 0.2), 0 0 20px rgba(45, 212, 255, 0.18);
             --radius: 14px;
-            --sidebar-width: 290px;
+            --sidebar-width: clamp(18rem, 20vw, 24rem);
+            --content-width: min(100%, 78rem);
         }
 
         * {
@@ -38,7 +39,7 @@
                 radial-gradient(1200px 500px at 10% -10%, rgba(45, 212, 255, 0.16), transparent 55%),
                 radial-gradient(900px 400px at 110% 0%, rgba(34, 197, 94, 0.09), transparent 58%),
                 linear-gradient(180deg, #060912 0%, #090f1d 45%, #0a1324 100%);
-            padding: 28px 28px 32px calc(var(--sidebar-width) + 36px);
+            padding: clamp(1rem, 2vw, 1.75rem) clamp(1rem, 2vw, 1.75rem) clamp(1.25rem, 2.2vw, 2rem) calc(var(--sidebar-width) + clamp(1rem, 2vw, 2rem));
         }
 
         body::before {
@@ -52,9 +53,9 @@
         }
 
         .header {
-            width: min(1180px, 100%);
+            width: var(--content-width);
             margin: 0 auto 20px;
-            padding: 24px 28px;
+            padding: clamp(1rem, 1.8vw, 1.6rem) clamp(1rem, 2vw, 1.8rem);
             border-radius: calc(var(--radius) + 4px);
             border: 1px solid var(--border);
             background: linear-gradient(140deg, rgba(15, 24, 45, 0.92), rgba(18, 34, 63, 0.86));
@@ -66,10 +67,10 @@
         .header::after {
             content: '';
             position: absolute;
-            width: 320px;
-            height: 320px;
-            top: -220px;
-            right: -90px;
+            width: clamp(16rem, 28vw, 20rem);
+            height: clamp(16rem, 28vw, 20rem);
+            top: -14rem;
+            right: -6rem;
             border-radius: 50%;
             background: radial-gradient(circle, rgba(45, 212, 255, 0.35), transparent 65%);
         }
@@ -93,13 +94,13 @@
 
         .tab-navigation {
             position: fixed;
-            top: 28px;
-            left: 22px;
+            top: clamp(1rem, 2vw, 1.75rem);
+            left: clamp(0.9rem, 1.8vw, 1.4rem);
             width: var(--sidebar-width);
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding: 14px;
+            padding: clamp(0.85rem, 1.4vw, 1rem);
             border-radius: 18px;
             background: linear-gradient(170deg, rgba(15, 24, 45, 0.95), rgba(10, 17, 32, 0.88));
             border: 1px solid rgba(83, 126, 255, 0.35);
@@ -112,12 +113,12 @@
             width: 100%;
             border: 1px solid rgba(133, 152, 212, 0.28);
             border-radius: 12px;
-            padding: 12px 13px;
+            padding: 0.8rem 0.9rem;
             text-align: left;
             color: var(--text);
             background: linear-gradient(140deg, rgba(22, 33, 61, 0.9), rgba(13, 22, 42, 0.85));
             font-family: 'Exo 2', sans-serif;
-            font-size: 0.94rem;
+            font-size: clamp(0.9rem, 0.7vw, 0.98rem);
             font-weight: 600;
             letter-spacing: 0.01em;
             cursor: pointer;
@@ -137,7 +138,7 @@
         }
 
         hr {
-            width: min(1180px, 100%);
+            width: var(--content-width);
             margin: 4px auto 18px;
             border: 0;
             border-top: 1px solid rgba(112, 137, 205, 0.34);
@@ -145,7 +146,7 @@
 
         .content-section {
             display: none;
-            width: min(1180px, 100%);
+            width: var(--content-width);
             margin: 0 auto;
         }
 
@@ -170,7 +171,7 @@
             background: linear-gradient(165deg, rgba(16, 26, 47, 0.92), rgba(12, 19, 36, 0.88));
             border: 1px solid var(--border);
             box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(214, 226, 255, 0.05);
-            padding: 22px;
+            padding: clamp(1rem, 1.8vw, 1.4rem);
             margin-bottom: 18px;
         }
 
@@ -187,8 +188,8 @@
 
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+            gap: clamp(0.85rem, 1.4vw, 1rem);
         }
 
         .note-card,
@@ -252,7 +253,7 @@
         .comparison-box {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 0.5rem;
             margin-top: 10px;
         }
 
@@ -288,7 +289,7 @@
 
         .sim-layout,
         .game-container {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
         }
 
         .toolbox h3 {
@@ -302,7 +303,7 @@
         .live-output-box,
         .binary-stream-box,
         .level-indicator {
-            padding: 12px;
+            padding: 0.85rem;
             color: #d8e3ff;
         }
 
@@ -380,15 +381,15 @@
 
         .pixel-grid {
             display: grid;
-            grid-template-columns: repeat(5, 50px);
-            gap: 8px;
+            grid-template-columns: repeat(5, minmax(2.4rem, 4.2vw));
+            gap: 0.5rem;
             justify-content: center;
             margin-bottom: 12px;
         }
 
         .pixel {
-            width: 50px;
-            height: 50px;
+            width: 100%;
+            aspect-ratio: 1;
             display: grid;
             place-items: center;
             color: #9aa7cb;
@@ -406,7 +407,7 @@
         }
 
         .detective-cards {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr));
         }
 
         .image-card {
@@ -419,7 +420,7 @@
 
         .image-card img {
             width: 100%;
-            height: 280px;
+            height: clamp(14rem, 22vw, 18rem);
             object-fit: cover;
             display: block;
         }
@@ -498,7 +499,7 @@
 
         @media (max-width: 600px) {
             .header {
-                padding: 18px;
+                padding: 16px;
             }
 
             .header h1 {
@@ -582,7 +583,7 @@
     <button class="tab-btn" onclick="switchTab('detective')">🔍 4. AI Detective Challenge</button>
 </div>
 
-<hr style="width:100%; max-width:1050px; border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
+<hr style="width:min(100%, 65rem); border:0; border-top:1px solid #cbd5e1; margin-bottom:1.25rem;">
 
 <div id="section-notes" class="content-section active">
     <div class="panel">
@@ -669,7 +670,7 @@
                 <h3>Your Mission</h3>
                 <p>A smart sensor generated a 25-bit stream of <strong>Kod Binari</strong> representing a mini smile avatar. Match the pixels to feed the AI matrix!</p>
                 <div class="binary-stream-box">1000100000101011000101110</div>
-                <p style="font-size:13px; color:#475569;">💡 Click squares to set them to <strong>1 (Black)</strong>. Leave spacers as <strong>0 (White)</strong>.</p>
+                <p style="font-size:0.8125rem; color:#475569;">💡 Click squares to set them to <strong>1 (Black)</strong>. Leave spacers as <strong>0 (White)</strong>.</p>
             </div>
             <div class="game-panel-right">
                 <div class="pixel-grid" id="pixelGridWorkArea"></div>
@@ -705,10 +706,10 @@
                 </div>
             </div>
 
-            <div id="detective-feedback" class="visualizer room-state" style="max-width:700px; margin:20px auto;">
+            <div id="detective-feedback" class="visualizer room-state" style="max-width:min(100%, 43.75rem); margin:1.25rem auto;">
                 Detective Evaluation Status:<br>🕵️ Examine both pictures closely before making your choice...
             </div>
-            <button id="btn-next-level" class="btn-run" style="background:#0f172a; max-width:200px; display:none; margin:0 auto;" onclick="nextDetectiveLevel()">Next Case ➡️</button>
+            <button id="btn-next-level" class="btn-run" style="background:#0f172a; max-width:min(100%, 12.5rem); display:none; margin:0 auto;" onclick="nextDetectiveLevel()">Next Case ➡️</button>
         </div>
     </div>
 </div>
