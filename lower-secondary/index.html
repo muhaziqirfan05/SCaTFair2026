@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Computational Thinking Playbook</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --panel: #ffffff;
+            --text-main: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .header p { color: #64748b; margin: 8px 0 0 0; font-size: 16px; }
+
+        /* Navigation Tabs */
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--panel);
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .content-section {
+            display: none;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .panel {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 { color: #0f172a; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;}
+        h3 { color: #1e293b; }
+
+        /* Syllabus Badges */
+        .syllabus-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+            margin-right: 4px;
+        }
+
+        /* Notes Layout */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .note-card {
+            background: #f8fafc;
+            border-top: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .comparison-box {
+            display: flex;
+            gap: 15px;
+            margin-top: 12px;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+        .comp-half { flex: 1; }
+        .comp-title { font-weight: bold; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;}
+
+        /* Pipeline & Game Common Grid Layouts */
+        .sim-layout { display: flex; gap: 30px; }
+        .sim-col { flex: 1; }
+        .workspace { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .fc-shape { padding: 12px 20px; color: white; font-weight: bold; text-align: center; min-width: 240px; border-radius: 4px; }
+        .fc-terminator { background: #7c3aed; border-radius: 20px; }
+        .fc-process { background: #475569; }
+        
+        .slot {
+            border: 2px dashed #cbd5e1; background: #f1f5f9; color: #64748b; border-radius: 6px;
+            min-height: 50px; min-width: 280px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; cursor: pointer; text-align: center; padding: 5px 15px; transition: all 0.2s ease;
+        }
+        .slot:hover { border-color: var(--primary); background: #f8fafc; }
+        .slot.filled { background: #e2e8f0; border-style: solid; border-color: #94a3b8; color: var(--text-main); font-weight: 600; }
+        .arrow { font-size: 20px; color: #94a3b8; font-weight: bold; margin: -5px 0; }
+
+        .block-option {
+            background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; margin-bottom: 12px;
+            border-radius: 6px; cursor: pointer; font-size: 13px; line-height: 1.4; transition: all 0.2s;
+        }
+        .block-option:hover { background: #edf2f7; border-color: #94a3b8; }
+
+        .visualizer {
+            margin-top: 20px; text-align: center; padding: 20px; border-radius: 8px;
+            background: #e2e8f0; font-weight: bold; font-size: 14px; line-height: 1.6;
+        }
+        .room-state { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
+        .room-success { background: #d1fae5; color: var(--success); border: 1px solid #6ee7b7; }
+
+        .btn-run {
+            width: 100%; padding: 14px; background: var(--primary); color: white; border: none;
+            border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px;
+        }
+
+        /* --- Vision Game Layout --- */
+        .game-container { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
+        .game-panel-left { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; }
+        .game-panel-right { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .binary-stream-box {
+            background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 16px;
+            padding: 15px; border-radius: 6px; letter-spacing: 2px; text-align: center; margin: 15px 0;
+        }
+        .pixel-grid { display: grid; grid-template-columns: repeat(5, 50px); gap: 4px; background: #cbd5e1; padding: 6px; border-radius: 8px; }
+        .pixel {
+            width: 50px; height: 50px; background: #ffffff; border: 1px solid #94a3b8; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: #94a3b8;
+        }
+        .pixel.active { background: #1e293b; color: #ffffff; }
+
+        /* --- DETECTIVE CHALLENGE STYLES (UPDATED FOR 500PX WIDTH) --- */
+        .detective-container { text-align: center; margin-top: 10px; }
+        .level-indicator { font-weight: bold; color: var(--primary); font-size: 18px; margin-bottom: 10px; }
+        .detective-cards { display: flex; justify-content: center; gap: 25px; margin: 20px 0; flex-wrap: wrap; }
+        
+        .image-card {
+            background: #f1f5f9; 
+            border: 3px solid #cbd5e1; 
+            border-radius: 10px; 
+            overflow: hidden;
+            width: 500px; /* Locked down layout width container */
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            position: relative;
+        }
+        .image-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        .image-card img { 
+            width: 100%; 
+            height: 360px; /* Scaled aspect ratio safely to match 500px rendering width */
+            object-fit: cover; 
+            display: block; 
+        }
+        
+        .card-label { padding: 14px; font-weight: bold; background: #ffffff; border-top: 1px solid #e2e8f0; font-size: 15px; }
+        .clue-overlay {
+            position: absolute; top: 15px; left: 15px; background: rgba(239, 68, 68, 0.95);
+            color: white; padding: 10px 14px; border-radius: 6px; font-size: 13px; text-align: left;
+            max-width: 85%; display: none; line-height: 1.4; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .sim-layout, .game-container, .detective-cards { flex-direction: column; align-items: center; }
+            .image-card { width: 100%; max-width: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>AI & Computational Thinking Playbook</h1>
+    <p>Discover how your Form 1-3 ASK & RBT logic sub-topics unlock the power of Artificial Intelligence!</p>
+</div>
+
+<div class="tab-navigation">
+    <button class="tab-btn active" onclick="switchTab('notes')">📖 1. Learn the Basics (Notes)</button>
+    <button class="tab-btn" onclick="switchTab('activity')">🦾 2. Smart Cooling Pipeline</button>
+    <button class="tab-btn" onclick="switchTab('game')">👁️ 3. AI Vision Game</button>
+    <button class="tab-btn" onclick="switchTab('detective')">🔍 4. AI Detective Challenge</button>
+</div>
+
+<hr style="width:100%; max-width:1050px; border:0; border-top:1px solid #cbd5e1; margin-bottom:20px;">
+
+<div id="section-notes" class="content-section active">
+    <div class="panel">
+        <h2>How AI Uses Your Lower Secondary Syllabus</h2>
+        <p>Artificial Intelligence runs entirely on the core principles of <strong>Pemikiran Komputasional</strong> that you study in school.</p>
+        <div class="notes-grid">
+            <div class="note-card">
+                <div class="syllabus-badge">ASK: Pengecaman Corak</div>
+                <h3>1. Pattern Recognition</h3>
+                <p>Machine Learning models analyze huge datasets to find hidden textures and trends that humans might miss.</p>
+                <div class="comparison-box">
+                    <div class="comp-half"><div class="comp-title" style="color:var(--danger)">Old Rules</div>Checks flat fixed values strictly.</div>
+                    <div class="comp-half" style="border-left:1px solid #e2e8f0; padding-left:10px;"><div class="comp-title" style="color:var(--success)">AI Solution</div>Maps fluid multi-variable trends together.</div>
+                </div>
+            </div>
+            <div class="note-card" style="border-top-color: #7c3aed;">
+                <div class="syllabus-badge">ASK: Leraian</div>
+                <h3>2. Decomposition</h3>
+                <p>To analyze complex data, an AI breaks real-world environments down into independent processing streams (features).</p>
+            </div>
+            <div class="note-card" style="border-top-color: #f59e0b;">
+                <div class="syllabus-badge">ASK: Peniskalaan</div>
+                <h3>3. Abstraction</h3>
+                <p>AI models practice Abstraction by filtering out background noise, random spikes, or visual glitch patterns to focus solely on crucial data properties.</p>
+            </div>
+            <div class="note-card" style="border-top-color: var(--success);">
+                <div class="syllabus-badge">RBT: Carta Alir</div>
+                <h3>4. Dynamic Control Structures</h3>
+                <p>Instead of hardcoding a fixed, permanent "YES/NO" flowchart choice, an AI pipeline paths itself dynamically using data pattern weights.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="section-activity" class="content-section">
+    <div class="panel sim-layout">
+        <div class="sim-col">
+            <div class="workspace">
+                <div class="fc-shape fc-terminator">START PIPELINE</div><div class="arrow">↓</div>
+                <div class="fc-shape fc-process">Decompose Input Streams<br><small>(Temp + Student Count + Hours)</small></div><div class="arrow">↓</div>
+                <div class="slot" id="slot-ai-core" onclick="clearSlot('ai-core')">🧠 Click to select Computational Logic block</div><div class="arrow">↓</div>
+                <div class="slot" id="slot-hardware" onclick="clearSlot('hardware')">⚡ Click to select Dynamic Execution block</div><div class="arrow">↓</div>
+                <div class="fc-shape fc-terminator">END CYCLE</div>
+            </div>
+        </div>
+        <div class="sim-col">
+            <div class="toolbox">
+                <h3>Step 1: Choose Core Processing Logic</h3>
+                <div class="block-option" onclick="selectBlock('ai-core', 'Use Pattern Recognition on historical training datasets to guess optimal power load %', true)">
+                    <strong>[AI Path]</strong> Use Pattern Recognition on historical training datasets to guess optimal power load %
+                </div>
+                <div class="block-option" onclick="selectBlock('ai-core', 'Apply strict Selection structural rule: IF Temp > 25°C, run at 100% capacity', false)">
+                    <strong>[Traditional Path]</strong> Apply strict Selection structural rule: IF Temp > 25°C, run at 100% capacity
+                </div>
+                <h3>Step 2: Choose Output Execution Method</h3>
+                <div class="block-option" onclick="selectBlock('hardware', 'Vary AC output level smoothly (0% - 100%) to match the exact pattern prediction weight', true)">
+                    <strong>[AI Path]</strong> Vary AC output level smoothly (0% - 100%) to match the exact pattern prediction weight
+                </div>
+                <div class="block-option" onclick="selectBlock('hardware', 'Turn on traditional mechanical relay toggle switch repeatedly (On or Off only)', false)">
+                    <strong>[Traditional Path]</strong> Turn on traditional mechanical relay toggle switch repeatedly (On or Off only)
+                </div>
+            </div>
+            <button class="btn-run" onclick="runSimulation()">Run AI Simulation 🚀</button>
+            <div id="room-status" class="visualizer room-state">System Status Monitor:<br>⚠️ Flowchart incomplete. Awaiting configuration...</div>
+        </div>
+    </div>
+</div>
+
+<div id="section-game" class="content-section">
+    <div class="panel">
+        <h2>AI Computer Vision: The Face Data Decoder</h2>
+        <div class="syllabus-badge">ASK Form 1: Kod Binari</div><div class="syllabus-badge">ASK Form 2: Pengecaman Corak</div>
+        <div class="game-container">
+            <div class="game-panel-left">
+                <h3>Your Mission</h3>
+                <p>A smart sensor generated a 25-bit stream of <strong>Kod Binari</strong> representing a mini smile avatar. Match the pixels to feed the AI matrix!</p>
+                <div class="binary-stream-box">1000100000101011000101110</div>
+                <p style="font-size:13px; color:#475569;">💡 Click squares to set them to <strong>1 (Black)</strong>. Leave spacers as <strong>0 (White)</strong>.</p>
+            </div>
+            <div class="game-panel-right">
+                <div class="pixel-grid" id="pixelGridWorkArea"></div>
+                <div class="live-output-box">Your Live String: <span id="live-binary-string" style="font-family:monospace; font-weight:bold; color:var(--primary);">0000000000000000000000000</span></div>
+                <button class="btn-run" style="background:#7c3aed;" onclick="verifyVisionPattern()">Process Matrix to AI Engine 👁️</button>
+                <div id="game-status-output" class="visualizer room-state" style="width:100%; box-sizing:border-box;">AI Status: Awaiting bitstream array packet...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="section-detective" class="content-section">
+    <div class="panel">
+        <h2>AI Detective: Spot the Fake!</h2>
+        <div class="syllabus-badge">ASK Form 2: Peniskalaan (Abstraction)</div>
+        <div class="syllabus-badge">ASK Form 3: Digital Literacy & Verification</div>
+        <p>Apply <strong>Abstraction (Peniskalaan)</strong> to filter out the pretty background colors and inspect the technical artifacts left behind by generative image algorithms. Find the AI-generated image!</p>
+        
+        <div class="detective-container">
+            <div id="detective-level-title" class="level-indicator">Level 1: The Kitchen Canteen Food Test (Easy)</div>
+            <p id="detective-level-instruction">One picture is a genuine close-up photo of a kitchen worker prep. The other is AI-generated. Click the fake!</p>
+            
+            <div class="detective-cards">
+                <div class="image-card" id="card-left" onclick="guessImage('left')">
+                    <img id="img-left" src="" alt="Option A">
+                    <div class="clue-overlay" id="clue-left"></div>
+                    <div class="card-label">Image Option A</div>
+                </div>
+                <div class="image-card" id="card-right" onclick="guessImage('right')">
+                    <img id="img-right" src="" alt="Option B">
+                    <div class="clue-overlay" id="clue-right"></div>
+                    <div class="card-label">Image Option B</div>
+                </div>
+            </div>
+
+            <div id="detective-feedback" class="visualizer room-state" style="max-width:700px; margin:20px auto;">
+                Detective Evaluation Status:<br>🕵️ Examine both pictures closely before making your choice...
+            </div>
+            <button id="btn-next-level" class="btn-run" style="background:#0f172a; max-width:200px; display:none; margin:0 auto;" onclick="nextDetectiveLevel()">Next Case ➡️</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        if(window.event && window.event.target) window.event.target.classList.add('active');
+
+        document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+        document.getElementById(`section-${tabId}`).classList.add('active');
+    }
+
+    // STATE TRACERS FOR TAB 2 PIPELINE
+    let selections = { 'ai-core': { text: null, isCorrect: false }, hardware: { text: null, isCorrect: false } };
+    function selectBlock(type, text, isCorrect) {
+        selections[type] = { text: text, isCorrect: isCorrect };
+        const slot = document.getElementById(`slot-${type}`);
+        slot.innerText = text; slot.classList.add('filled');
+    }
+    function clearSlot(type) {
+        selections[type] = { text: null, isCorrect: false };
+        const slot = document.getElementById(`slot-${type}`);
+        slot.innerText = type === 'ai-core' ? '🧠 Click to select Computational Logic block' : '⚡ Click to select Dynamic Execution block';
+        slot.classList.remove('filled');
+    }
+    function runSimulation() {
+        if (!selections['ai-core'].text || !selections.hardware.text) { alert("🔒 Flowchart layout incomplete!"); return; }
+        const statusDiv = document.getElementById('room-status');
+        if (selections['ai-core'].isCorrect && selections.hardware.isCorrect) {
+            statusDiv.className = "visualizer room-success";
+            statusDiv.innerHTML = "Success! 🎉 AI Pipeline Active.<br>Saved 35% on electricity using Pattern Recognition context models!";
+        } else {
+            statusDiv.className = "visualizer room-state";
+            statusDiv.innerHTML = "Simulation Failed ❌<br>Review your pipeline blocks. This isn't dynamic AI optimization logic.";
+        }
+    }
+
+    // TAB 3 GAME LOGIC
+    const targetPattern = "1000100000101011000101110"; 
+    let currentGridState = Array(25).fill(0);
+    function buildInteractiveGrid() {
+        const gridContainer = document.getElementById('pixelGridWorkArea');
+        gridContainer.innerHTML = '';
+        for (let i = 0; i < 25; i++) {
+            const pixelElement = document.createElement('div');
+            pixelElement.className = 'pixel'; pixelElement.innerText = '0'; pixelElement.dataset.index = i;
+            pixelElement.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                if (currentGridState[idx] === 0) {
+                    currentGridState[idx] = 1; this.className = 'pixel active'; this.innerText = '1';
+                } else {
+                    currentGridState[idx] = 0; this.className = 'pixel'; this.innerText = '0';
+                }
+                document.getElementById('live-binary-string').innerText = currentGridState.join('');
+            });
+            gridContainer.appendChild(pixelElement);
+        }
+    }
+    function verifyVisionPattern() {
+        const playerStr = currentGridState.join('');
+        const statusOutput = document.getElementById('game-status-output');
+        if (playerStr === targetPattern) {
+            statusOutput.className = "visualizer room-success";
+            statusOutput.innerHTML = "<strong>AI Analysis Status: MATCH FOUND! 🎉</strong><br>Features Recognized: Eyes, nose bridge, and mouth arrays correctly classified via binary input values.";
+        } else {
+            statusOutput.className = "visualizer room-state";
+            statusOutput.innerHTML = "<strong>AI Error: Mismatch ❌</strong><br>The matrix structure doesn't compile safely. Keep decoding!";
+        }
+    }
+
+    // --- TAB 4: DETECTIVE CHALLENGE ENGINE ---
+    let currentLevel = 1;
+    const levelData = {
+        1: {
+            title: "Level 1: The Canteen Kitchen Test (Easy)",
+            instruction: "One picture is a real photo of raw baking setup. The other is an AI generated asset with physical errors. Spot the fake!",
+            leftImg: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=600&q=80", 
+            rightImg: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&w=600&q=80", 
+            fakeSide: "right",
+            leftClue: "✅ <strong>Real:</strong> Notice the natural, messy, imperfect textures of flour dust and chaotic lighting reflections.",
+            rightClue: "⚠️ <strong>AI Generated!</strong> Zoom into the facial pores and teeth. They are perfectly hyper-symmetrical, airbrushed, and look plastic like a doll."
+        },
+        2: {
+            title: "Level 2: Night Market Neon Lights (Medium)",
+            instruction: "Look closely at background elements and signs. AI struggles to paint human text characters properly!",
+            // FIXED: Using direct CDN link format to render the asset directly without routing conflicts
+            leftImg: "images/image-ai.png", 
+            rightImg: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=600&q=80", 
+            fakeSide: "left",
+            leftClue: "⚠️ <strong>AI Generated!</strong> Look closely at the background glowing signs. The characters aren't actual words; they're warped, alien geometric gibberish patterns.",
+            rightClue: "✅ <strong>Real:</strong> The lens textures, structural light leakages, and human crowd silhouettes match organic physics."
+        }
+    };
+
+    function loadDetectiveLevel() {
+        const data = levelData[currentLevel];
+        document.getElementById('detective-level-title').innerText = data.title;
+        document.getElementById('detective-level-instruction').innerText = data.instruction;
+        document.getElementById('img-left').src = data.leftImg;
+        document.getElementById('img-right').src = data.rightImg;
+        
+        // Reset feedback states
+        document.getElementById('clue-left').style.display = "none";
+        document.getElementById('clue-right').style.display = "none";
+        const fb = document.getElementById('detective-feedback');
+        fb.className = "visualizer room-state";
+        fb.innerHTML = "Detective Evaluation Status:<br>🕵️ Examine both pictures closely before making your choice...";
+        document.getElementById('btn-next-level').style.display = "none";
+    }
+
+    function guessImage(side) {
+        const data = levelData[currentLevel];
+        const fb = document.getElementById('detective-feedback');
+        
+        // Reveal explanations overlays
+        document.getElementById('clue-left').innerHTML = data.leftClue;
+        document.getElementById('clue-right').innerHTML = data.rightClue;
+        document.getElementById('clue-left').style.display = "block";
+        document.getElementById('clue-right').style.display = "block";
+
+        if (side === data.fakeSide) {
+            fb.className = "visualizer room-success";
+            fb.innerHTML = "<strong>Correct Catch, Detective! 🎯</strong><br>Your Abstraction skills are sharp. You filtered out the distracting background and caught the AI's structural shortcut mistakes!";
+        } else {
+            fb.className = "visualizer room-state";
+            fb.innerHTML = "<strong>Incorrect! You were fooled by the AI ❌</strong><br>The AI model managed to hide its glitches in plain sight. Read the red clue markers on the images to see what you missed!";
+        }
+
+        // Show navigation button if further content structures remain
+        if (levelData[currentLevel + 1]) {
+            document.getElementById('btn-next-level').style.display = "block";
+        } else {
+            fb.innerHTML += "<br><br>🏆 <strong>Case Closed!</strong> You have successfully finished all the AI data verification tiers.";
+        }
+    }
+
+    function nextDetectiveLevel() {
+        currentLevel++;
+        loadDetectiveLevel();
+    }
+
+    window.onload = function() {
+        buildInteractiveGrid();
+        loadDetectiveLevel();
+    };
+</script>
+
+</body>
+</html>
