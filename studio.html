@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio // Advanced Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --neon-blue: #00d4ff; --neon-purple: #9d00ff; --dark-slate: #0a0b10;
+            --tech-border: rgba(0, 212, 255, 0.2);
+        }
+        body { 
+            background: var(--dark-slate); 
+            color: #e2e8f0; 
+            font-family: 'Outfit', sans-serif; 
+            overflow: hidden; 
+            height: 100vh;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- NEURAL NETWORK BACKGROUND --- */
+        #net-canvas {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at center, #111420 0%, #050508 100%);
+        }
+
+        /* --- TECH-SPEC INTERFACE --- */
+        .glass-shell {
+            background: rgba(10, 11, 16, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--tech-border);
+            border-radius: 12px; /* Sharper, more professional corners */
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Hexagonal / Angular Nav Buttons */
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            color: #475569;
+        }
+        .nav-btn.active {
+            color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid var(--neon-blue);
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 2px solid var(--neon-purple);
+            transition: 0.3s;
+        }
+        .content-card:hover { border-color: var(--neon-blue); background: rgba(0, 212, 255, 0.03); }
+
+        .btn-action {
+            background: linear-gradient(90deg, #1e293b, #0f172a);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-family: 'JetBrains Mono';
+            transition: 0.2s;
+        }
+        .btn-action:hover {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        /* Scanning Line Animation */
+        .scanline {
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            position: absolute; top: 0; left: 0; opacity: 0.2;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan { from { top: 0%; } to { top: 100%; } }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-6 lg:p-10">
+
+    <canvas id="net-canvas"></canvas>
+
+    <main class="max-w-7xl mx-auto h-[85vh] flex flex-col glass-shell overflow-hidden relative">
+        <div class="scanline"></div>
+        
+        <header class="p-4 px-8 flex justify-between items-center border-b border-white/5 bg-black/40">
+            <div class="flex items-center gap-6">
+                <div class="flex flex-col">
+                    <h1 class="text-xl font-black tracking-tighter italic">METADISE  <span class="text-cyan-400">ACADEMY</span></h1>
+                    <span class="mono text-[9px] text-cyan-500/60 uppercase tracking-widest">Auth_Level: Advanced_Researcher</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <div class="mono text-[10px]">
+                    <span class="text-slate-500">LATENCY:</span> <span class="text-green-500">12ms</span>
+                </div>
+                <div class="mono text-[10px]">
+                    <span class="text-slate-500">MODEL:</span> <span class="text-purple-400">GPT-4_TURBO_2026</span>
+                </div>
+                <div class="flex gap-2">
+                    <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                    <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <nav class="w-20 md:w-64 flex flex-col border-r border-white/5 bg-black/20">
+                <div class="p-4 space-y-2 mt-4">
+                    <button onclick="nav('intel')" id="n-intel" class="nav-btn active w-full p-4 flex items-center gap-4">
+                        <i class="fas fa-microchip"></i> <span class="hidden md:inline mono text-xs font-bold uppercase">About AI</span>
+                    </button>
+                    <button onclick="nav('lab')" id="n-lab" class="nav-btn w-full p-4 flex items-center gap-4">
+                        <i class="fas fa-brain"></i> <span class="hidden md:inline mono text-xs font-bold uppercase">Brainstorm</span>
+                    </button>
+                    <button onclick="nav('audit')" id="n-audit" class="nav-btn w-full p-4 flex items-center gap-4">
+                        <i class="fas fa-puzzle-piece"></i> <span class="hidden md:inline mono text-xs font-bold uppercase">Activities</span>
+                    </button>
+                </div>
+                <div class="mt-auto p-6 border-t border-white/5">
+                    <div class="hidden md:block">
+                        <p class="mono text-[9px] text-slate-500 mb-2 uppercase">GPU_Usage</p>
+                        <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="w-3/4 h-full bg-cyan-500"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 space-y-2 mt-4">
+                    <button onclick="window.location.href = 'index.html'" class="nav-btn w-full p-4 flex items-center gap-4">
+                        <i class="fas fa-home"></i> <span class="hidden md:inline mono text-xs font-bold uppercase">Home</span>
+                    </button>
+                </div>
+            </nav>
+
+            <main class="flex-1 p-8 md:p-12 overflow-y-auto">
+                
+                <section id="p-intel" class="page active">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <h2 class="mono text-sm font-bold text-cyan-500 uppercase tracking-widest">Core Process // Neural Decision Engine</h2>
+        <div class="h-px flex-1 bg-white/10"></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="content-card p-6 border-l-cyan-400">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-white font-bold mono text-xs uppercase">01 // Input Tokenization</h3>
+                <span class="mono text-[9px] px-2 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-400/20">VECTOR_MODE</span>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                AI converts linguistic input into numerical vectors. Text is fragmented into <strong class="text-cyan-300">tokens</strong>, allowing the model to compute language mathematically.
+            </p>
+            <div class="bg-black/40 p-3 rounded mono text-[10px] text-slate-500 border border-white/5 italic">
+                Status: Words converted to tensor data.
+            </div>
+        </div>
+
+        <div class="content-card p-6 border-l-purple-500">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-white font-bold mono text-xs uppercase">02 // Pattern Synthesis</h3>
+                <span class="mono text-[9px] px-2 py-1 bg-purple-500/10 text-purple-400 border border-purple-400/20">LAYER_DEPTH</span>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                Input passes through multiple <strong class="text-purple-300">Neural Network layers</strong>. Each layer applies learned weights to detect higher-level conceptual relationships.
+            </p>
+            <div class="bg-black/40 p-3 rounded mono text-[10px] text-slate-500 border border-white/5 italic">
+                Process: Learned weights identifying relationships.
+            </div>
+        </div>
+
+        <div class="content-card p-6 border-l-yellow-500">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-white font-bold mono text-xs uppercase">03 // Statistical Inference</h3>
+                <span class="mono text-[9px] px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-400/20">PREDICTION_NET</span>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                The model calculates the <strong class="text-yellow-300">statistical likelihood</strong> of the next token. It chooses the "best fit" answer based on probability distributions.
+            </p>
+            <div class="bg-black/40 p-3 rounded mono text-[10px] text-slate-500 border border-white/5 italic">
+                Result: Best prediction != guaranteed truth.
+            </div>
+        </div>
+
+        <div class="content-card p-6 border-l-red-500">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-white font-bold mono text-xs uppercase">04 // Operational Constraints</h3>
+                <span class="mono text-[9px] px-2 py-1 bg-red-500/10 text-red-500 border border-red-400/20">ERR_CHECK</span>
+            </div>
+            <p class="text-slate-400 text-sm leading-relaxed mb-2">
+                Fundamental limitations detected:
+            </p>
+            <ul class="mono text-[11px] text-red-400 space-y-1 opacity-80">
+                <li>• No awareness or intent</li>
+                <li>• Risk of hallucinated outputs</li>
+                <li>• Zero real understanding of meaning</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+                <section id="p-lab" class="page">
+                    <h2 class="mono text-2xl font-black mb-8 text-cyan-400">PROMPT_ENGINEER_V1</h2>
+                    <div class="grid lg:grid-cols-2 gap-10">
+                        <div class="space-y-6">
+                            <div class="p-6 bg-black/40 border border-white/10 rounded-lg">
+                                <label class="block mono text-[10px] text-cyan-500 mb-4 uppercase tracking-[0.2em]">System Persona Definition</label>
+                                <textarea id="sysPrompt" class="w-full bg-transparent border-b border-white/10 p-2 outline-none focus:border-cyan-400 text-sm h-32 mono" placeholder="Define system-level constraints..."></textarea>
+                            </div>
+                            <button onclick="execute()" class="w-full py-4 btn-action text-xs font-black uppercase tracking-widest">Execute_Deployment</button>
+                        </div>
+                        <div class="bg-black rounded-lg p-6 border border-white/5 flex flex-col h-full">
+                            <div class="flex justify-between mb-4 border-b border-white/5 pb-2">
+                                <span class="mono text-[10px] text-green-500">> TERMINAL_LOG</span>
+                                <span class="mono text-[10px] text-slate-600">v4.0.2</span>
+                            </div>
+                            <div id="term" class="mono text-[11px] text-slate-400 space-y-2">
+                                <p>> WAITING FOR INSTRUCTIONS...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="p-audit" class="page">
+                    <div class="max-w-3xl mx-auto">
+                        <h2 class="mono text-center text-slate-500 mb-12 uppercase tracking-widest font-bold">Heuristic_Analysis_Challenge</h2>
+                        <div class="content-card p-12 border-l-cyan-400 bg-black/40 text-center">
+                            <p class="text-xl font-light text-slate-300 leading-relaxed italic mb-10">
+                                "In 2025, a decentralized AI network achieved <strong>Artificial General Intelligence (AGI)</strong> by utilizing idle processing power from millions of smartphone batteries worldwide."
+                            </p>
+                            <div class="flex gap-4">
+                                <button onclick="audit(false)" class="flex-1 py-4 bg-transparent border border-red-500/50 text-red-500 mono text-xs hover:bg-red-500 hover:text-black transition uppercase">Flag_Hallucination</button>
+                                <button onclick="audit(false)" class="flex-1 py-4 bg-transparent border border-green-500/50 text-green-500 mono text-xs hover:bg-green-500 hover:text-black transition uppercase">Verify_Source</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        // --- NEURAL NETWORK CANVAS ---
+        const canvas = document.getElementById('net-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        for(let i=0; i<60; i++) {
+            points.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(0, 212, 255, 0.05)';
+            ctx.fillStyle = 'rgba(0, 212, 255, 0.2)';
+            
+            points.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2);
+                ctx.fill();
+
+                for(let j=i+1; j<points.length; j++) {
+                    const p2 = points[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if(dist < 150) {
+                        ctx.lineWidth = 1 - dist/150;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // --- NAVIGATION ---
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('p-' + id).classList.add('active');
+            document.getElementById('n-' + id).classList.add('active');
+        }
+
+        function execute() {
+            const term = document.getElementById('term');
+            term.innerHTML += `<p class="text-cyan-500">> INITIALIZING HYPER-PARAMETERS...</p>`;
+            setTimeout(() => {
+                term.innerHTML += `<p class="text-white">> [STATUS] PERSONA_V1 DEPLOYED ON LOCALHOST:8080</p>`;
+            }, 600);
+        }
+
+        function audit(val) {
+            alert("SYSTEM ALERT: This claim is a Hallucination. AGI remains an unsolved milestone in 2026.");
+        }
+    </script>
+</body>
+</html>
